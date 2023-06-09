@@ -59,7 +59,7 @@ class AddEditTaskFragment : Fragment() {
             viewLifecycleOwner,
             EventObserver {
                 val action = AddEditTaskFragmentDirections
-                    .actionAddEditTaskFragmentToTasksFragment(/*ADD_EDIT_RESULT_OK*/)
+                    .actionAddEditTaskFragmentToTasksFragment(ADD_EDIT_RESULT_OK)
                 findNavController().navigate(action)
             }
         )
