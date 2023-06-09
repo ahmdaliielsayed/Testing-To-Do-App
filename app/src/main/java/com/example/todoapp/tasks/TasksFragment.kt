@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.todoapp.EventObserver
 import com.example.todoapp.R
+import com.example.todoapp.TodoApplication
 import com.example.todoapp.databinding.TasksFragBinding
 import com.example.todoapp.util.setupRefreshLayout
 import com.example.todoapp.util.setupSnackbar
@@ -21,7 +22,11 @@ import timber.log.Timber
  */
 class TasksFragment : Fragment() {
 
-    private val viewModel by viewModels<TasksViewModel>()
+    private val viewModel by viewModels<TasksViewModel> {
+        TasksViewModel.TasksViewModelFactory(
+            (requireContext().applicationContext as TodoApplication).taskRepository
+        )
+    }
 
     private val args: TasksFragmentArgs by navArgs()
 
@@ -75,12 +80,18 @@ class TasksFragment : Fragment() {
     }
 
     private fun setupNavigation() {
-        viewModel.openTaskEvent.observe(viewLifecycleOwner, EventObserver {
-            openTaskDetails(it)
-        })
-        viewModel.newTaskEvent.observe(viewLifecycleOwner, EventObserver {
-            navigateToAddNewTask()
-        })
+        viewModel.openTaskEvent.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                openTaskDetails(it)
+            }
+        )
+        viewModel.newTaskEvent.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                navigateToAddNewTask()
+            }
+        )
     }
 
     private fun setupSnackbar() {

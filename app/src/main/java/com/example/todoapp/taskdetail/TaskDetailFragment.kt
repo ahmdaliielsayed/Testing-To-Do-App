@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.todoapp.EventObserver
 import com.example.todoapp.R
+import com.example.todoapp.TodoApplication
 import com.example.todoapp.databinding.TaskdetailFragBinding
 import com.example.todoapp.tasks.DELETE_RESULT_OK
 import com.example.todoapp.util.setupRefreshLayout
@@ -23,30 +24,32 @@ class TaskDetailFragment : Fragment() {
 
     private val args: TaskDetailFragmentArgs by navArgs()
 
-    private val viewModel by viewModels<TaskDetailViewModel>()
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        setupFab()
-        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
-        setupNavigation()
-        this.setupRefreshLayout(viewDataBinding.refreshLayout)
+    private val viewModel by viewModels<TaskDetailViewModel> {
+        TaskDetailViewModel.TaskDetailViewModelFactory(
+            (requireContext().applicationContext as TodoApplication).taskRepository
+        )
     }
 
     private fun setupNavigation() {
-        viewModel.deleteTaskEvent.observe(viewLifecycleOwner, EventObserver {
-            val action = TaskDetailFragmentDirections
-                .actionTaskDetailFragmentToTasksFragment(/*DELETE_RESULT_OK*/)
-            findNavController().navigate(action)
-        })
-        viewModel.editTaskEvent.observe(viewLifecycleOwner, EventObserver {
-            val action = TaskDetailFragmentDirections
-                .actionTaskDetailFragmentToAddEditTaskFragment(
-                    args.taskId,
-                    resources.getString(R.string.edit_task)
-                )
-            findNavController().navigate(action)
-        })
+        viewModel.deleteTaskEvent.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val action = TaskDetailFragmentDirections
+                    .actionTaskDetailFragmentToTasksFragment(DELETE_RESULT_OK)
+                findNavController().navigate(action)
+            }
+        )
+        viewModel.editTaskEvent.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val action = TaskDetailFragmentDirections
+                    .actionTaskDetailFragmentToAddEditTaskFragment(
+                        args.taskId,
+                        resources.getString(R.string.edit_task)
+                    )
+                findNavController().navigate(action)
+            }
+        )
     }
 
     private fun setupFab() {
@@ -56,7 +59,8 @@ class TaskDetailFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.taskdetail_frag, container, false)
@@ -69,6 +73,14 @@ class TaskDetailFragment : Fragment() {
 
         setHasOptionsMenu(true)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupFab()
+        view.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
+        setupNavigation()
+        this.setupRefreshLayout(viewDataBinding.refreshLayout)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

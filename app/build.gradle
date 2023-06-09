@@ -41,13 +41,10 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation "com.jakewharton.timber:timber:$timber_version"
 
@@ -61,14 +58,46 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version"
 
-    // dependency for local unit tests
-    testImplementation 'junit:junit:4.13.2'
-    // Hamcrest --> https://hamcrest.org/
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    // Truth --> https://truth.dev/
-    testImplementation "androidx.test:core-ktx:1.5.0" // Kotlin extensions for androidx.test.core
-    // To use the JUnit Extension APIs
-    testImplementation "androidx.test.ext:junit-ktx:1.1.5" // Kotlin extensions for androidx.test.ext.junit
-    testImplementation 'org.robolectric:robolectric:4.9' // Robolectric
-    testImplementation 'androidx.arch.core:core-testing:2.2.0' // to use InstantTaskExecutorRule()
+
+//    debugImplementation 'androidx.fragment:fragment-testing:1.5.7'
+
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.7.1'
+
+    // Dependencies for local unit tests
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "androidx.arch.core:core-testing:$arch_testing_version" // to use InstantTaskExecutorRule()
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version" // to use coroutine scope in testing
+    testImplementation "org.robolectric:robolectric:$robolectric_version" // Robolectric
+    testImplementation "org.hamcrest:hamcrest:$hamcrest_version" // Hamcrest --> https://hamcrest.org/
+    testImplementation "com.google.truth:truth:$truth_version" // Truth --> https://truth.dev/
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+
+    // AndroidX Test - JVM testing
+    testImplementation "androidx.test:core-ktx:$androidx_test_core_version" // Kotlin extensions for androidx.test.core
+    testImplementation "androidx.test.ext:junit-ktx:$androidx_test_ext_kotlin_runner_version" // Kotlin extensions for androidx.test.ext.junit
+    testImplementation "androidx.test:rules:$androidx_test_rules_version"
+
+    // AndroidX Test - Instrumented testing
+    androidTestImplementation "androidx.test:core-ktx:$androidx_test_core_version"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$androidx_test_ext_kotlin_runner_version"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version" // to use coroutine scope in testing
+    androidTestImplementation "androidx.test:rules:$androidx_test_rules_version"
+    androidTestImplementation "androidx.room:room-testing:$room_version"
+    androidTestImplementation "androidx.arch.core:core-testing:$arch_testing_version"
+    androidTestImplementation "org.robolectric:annotations:$robolectric_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    // Testing code for more advanced views such as the DatePicker and RecyclerView.
+    // It also contains accessibility checks and a class called CountingIdlingResource.
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_version"
+    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espresso_version"
+    androidTestImplementation "junit:junit:$junit_version"
+    // Testing code should not be included in the main code.
+    // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
+    debugImplementation "androidx.fragment:fragment-testing:$fragment_testing_version"
+    implementation "androidx.test:core:$androidx_test_core_version" // Kotlin extensions for androidx.test.core
+    androidTestImplementation "org.mockito:mockito-core:$mockito_version"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dex_maker_version" // Required to use Mockito in an Android project
 }
