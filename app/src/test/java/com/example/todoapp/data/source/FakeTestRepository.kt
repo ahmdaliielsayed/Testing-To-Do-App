@@ -8,11 +8,19 @@ import kotlinx.coroutines.runBlocking
 
 class FakeTestRepository : TasksRepository {
 
-    var tasksServiceDate: LinkedHashMap<String, Task> = LinkedHashMap()
+    var tasksServiceData: LinkedHashMap<String, Task> = LinkedHashMap()
+
     private val observableTasks = MutableLiveData<Result<List<Task>>>()
 
+    private var shouldReturnError = false
+
+    fun setReturnError(value: Boolean) { shouldReturnError = value }
+
     override suspend fun getTasks(forceUpdate: Boolean): Result<List<Task>> {
-        return Result.Success(tasksServiceDate.values.toList())
+        if (shouldReturnError) {
+            return Result.Error(Exception("Test exception"))
+        }
+        return Result.Success(tasksServiceData.values.toList())
     }
 
     override suspend fun refreshTasks() {
@@ -33,7 +41,13 @@ class FakeTestRepository : TasksRepository {
     }
 
     override suspend fun getTask(taskId: String, forceUpdate: Boolean): Result<Task> {
-        TODO("Not yet implemented")
+        if (shouldReturnError) {
+            return Result.Error(Exception("Test exception"))
+        }
+        tasksServiceData[taskId]?.let {
+            return Result.Success(it)
+        }
+        return Result.Error(Exception("Could not find task"))
     }
 
     override suspend fun saveTask(task: Task) {
@@ -41,7 +55,8 @@ class FakeTestRepository : TasksRepository {
     }
 
     override suspend fun completeTask(task: Task) {
-        TODO("Not yet implemented")
+        val completedTask = Task(task.title, task.description, true, task.id)
+        tasksServiceData[task.id] = completedTask
     }
 
     override suspend fun completeTask(taskId: String) {
@@ -68,9 +83,9 @@ class FakeTestRepository : TasksRepository {
         TODO("Not yet implemented")
     }
 
-    fun addTasks(vararg  tasks: Task) {
+    fun addTasks(vararg tasks: Task) {
         for (task in tasks) {
-            tasksServiceDate[task.id] = task
+            tasksServiceData[task.id] = task
         }
 
         runBlocking { refreshTasks() }
