@@ -37,6 +37,12 @@ android {
         enabled = true
         enabledForTests = true
     }
+
+    // Always show the results of every unit test when running bia command line, even if it passes.
+    testOptions.unitTests {
+        includeAndroidResources = true
+        returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -57,6 +63,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version"
+
+    implementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
 
 
 //    debugImplementation 'androidx.fragment:fragment-testing:1.5.7'
